@@ -73,6 +73,9 @@ class TimeOfWeek(object):
         if time < 0 or time > 2359:
             raise InvalidTimeException(time)
         
+        if time % 100 > 59:
+            raise InvalidTimeException(time)
+        
         return day, time
     
     def __parse_period(self, period):
@@ -127,7 +130,7 @@ class TimeOfWeek(object):
                     
         return new_object
     
-    def __str__(self):
+    def to_json(self):
         outputs = []
         for day_name in self._day_names:
             if day_name in self._periods:
@@ -139,6 +142,7 @@ class TimeOfWeek(object):
                 
         return ', '.join(outputs)
             
-        
+    def __str__(self):
+        return self.to_json()
                 
             

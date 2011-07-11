@@ -14,7 +14,7 @@ class TimeOfWeekTest(TestCase):
         self.invalid_days = ('M', 'T', 'monday', 'ananan')
         self.invalid_days2 = ('ABC', 'MOO')
         self.invalid_times = ('12345', '', '1', '123', '12', '-1', '1.2')
-        self.invalid_times2 = ('3000', '9999')
+        self.invalid_times2 = ('3000', '9999', '1267')
         
         
         
