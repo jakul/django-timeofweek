@@ -147,7 +147,27 @@ class TimeOfWeek(object):
                 outputs.append(output)
                 
         return ', '.join(outputs)
-
+    
+    @property
+    def minutes(self):
+        minutes = 0
+        for start_time, end_time in self._periods.values():
+            hours = start_time / 100
+            minutes_ = start_time % 100
+            finish = False
+            while hours <= 23 and finish == False:
+                while minutes_ <= 59 and finish == False:
+                    time = hours * 100 + minutes_
+                    if time >= end_time:
+                        finish = True
+                        continue
+                    minutes += 1
+                    minutes_ +=1
+                hours += 1
+                minutes_ = 0
+                                    
+        return minutes
+    
             
     def __str__(self):
         return self.to_json()

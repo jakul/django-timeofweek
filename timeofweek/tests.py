@@ -54,6 +54,7 @@ class TimeOfWeekTest(TestCase):
                 
         self.assertRaises(InvalidPeriodException, TimeOfWeek, '')
         self.assertRaises(InvalidPeriodException, TimeOfWeek, 'MON2359-2359')
+        self.assertRaises(InvalidPeriodException, TimeOfWeek, 'MON1200-1200')
         self.assertRaises(InvalidTimeException, TimeOfWeek, 'MON2358-0000')
         self.assertRaises(InvalidPeriodException, TimeOfWeek, 'MON 1200-1700')
         self.assertRaises(InvalidPeriodException, TimeOfWeek, 'MON1200-1700, ')
@@ -107,7 +108,30 @@ class TimeOfWeekTest(TestCase):
         self.assertTrue('MON1659' in tow)
         self.assertFalse('MON0859' in tow)
         self.assertFalse('MON1701' in tow)
+        
+        # Test the 'minutes' property
+        tow = TimeOfWeek()
+        self.assertEqual(tow.minutes, 11520) #don't forget our week has 8 days
+        
+        # Ensure we don't get extra minutes by adding 2 together
+        tow += TimeOfWeek()
+        self.assertEqual(tow.minutes, 11520)
                         
+        tow = TimeOfWeek('MON0000-0001')
+        self.assertEqual(tow.minutes, 1)
+        tow = TimeOfWeek('MON0000-0059')
+        self.assertEqual(tow.minutes, 59)
+        tow = TimeOfWeek('MON0000-0100')
+        self.assertEqual(tow.minutes, 60)
+        tow = TimeOfWeek('MON0000-0101')
+        self.assertEqual(tow.minutes, 61)
+        tow = TimeOfWeek('MON0000-2400')
+        self.assertEqual(tow.minutes, 1440)
+        tow = TimeOfWeek(
+             'MON0000-1200,TUE0000-1200,WED0000-1200,THU0000-1200,FRI0000-1200,'
+             'SAT0000-1200,SUN0000-1200,HOL0000-1200'
+         )
+        self.assertEqual(tow.minutes, 5760)
         
         
                    
