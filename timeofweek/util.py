@@ -160,6 +160,9 @@ class TimeOfWeek(object):
                                     
         return minutes
     
+    @property
+    def has_holiday(self):
+        return 'HOL' in self._periods
             
     def __str__(self):
         return self.to_json()

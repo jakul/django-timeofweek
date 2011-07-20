@@ -138,8 +138,23 @@ class TimeOfWeekTest(TestCase):
         tow = TimeOfWeek(
              'MON0000-1200,TUE0000-1200,WED0000-1200,THU0000-1200,FRI0000-1200,'
              'SAT0000-1200,SUN0000-1200,HOL0000-1200'
-         )
+        )
         self.assertEqual(tow.minutes, 5760)
+        
+        # Test the 'has_holiday' property
+        tow = TimeOfWeek()
+        self.assertTrue(tow.has_holiday)
+        tow = TimeOfWeek('MON0000-0001')
+        self.assertFalse(tow.has_holiday)
+        tow = TimeOfWeek('HOL0000-0001')
+        self.assertTrue(tow.has_holiday)
+        tow = TimeOfWeek('HOL0000-2400')
+        self.assertTrue(tow.has_holiday)
+        tow = TimeOfWeek(
+             'MON0000-1200,TUE0000-1200,WED0000-1200,THU0000-1200,FRI0000-1200,'
+             'SAT0000-1200,SUN0000-1200'
+        )
+        self.assertFalse(tow.has_holiday)        
         
         
                    
