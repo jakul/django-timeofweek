@@ -119,11 +119,15 @@ class TimeOfWeekTest(TestCase):
         
         # Test the 'minutes' property
         tow = TimeOfWeek()
-        self.assertEqual(tow.minutes, 11520) #don't forget our week has 8 days
+        self.assertEqual(tow.count_minutes(), 11520) #don't forget our week has 8 days
+        self.assertEqual(tow.minutes, 10080)
+        self.assertEqual(tow.holiday_minutes, 1440)
         
         # Ensure we don't get extra minutes by adding 2 together
         tow += TimeOfWeek()
-        self.assertEqual(tow.minutes, 11520)
+        self.assertEqual(tow.count_minutes(), 11520)
+        self.assertEqual(tow.minutes, 10080)
+        self.assertEqual(tow.holiday_minutes, 1440)
                         
         tow = TimeOfWeek('MON0000-0001')
         self.assertEqual(tow.minutes, 1)
@@ -139,7 +143,8 @@ class TimeOfWeekTest(TestCase):
              'MON0000-1200,TUE0000-1200,WED0000-1200,THU0000-1200,FRI0000-1200,'
              'SAT0000-1200,SUN0000-1200,HOL0000-1200'
         )
-        self.assertEqual(tow.minutes, 5760)
+        self.assertEqual(tow.minutes, 5040)
+        self.assertEqual(tow.holiday_minutes, 720)
         
         # Test the 'has_holiday' property
         tow = TimeOfWeek()

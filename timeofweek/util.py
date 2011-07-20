@@ -142,8 +142,32 @@ class TimeOfWeek(object):
     
     @property
     def minutes(self):
+        """
+        Returns the number of minutes this TimeOfWeek contains, excluding
+        holiday minutes
+        """
+        return self.count_minutes(
+            ('MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN')
+        )
+    
+    @property
+    def holiday_minutes(self):
+        """
+        Return the number of holiday minutes this TimeOfWeek contains
+        """
+        return self.count_minutes(('HOL',))
+ 
+    
+    def count_minutes(self, days=None):
+        """
+        Return the number of minutes this TimeOfWeek contains in the given days
+        """
+        if days == None:
+            days = self._day_names
+            
         minutes = 0
-        for start_time, end_time in self._periods.values():
+        times = [val for key, val in self._periods.items() if key in days]
+        for start_time, end_time in times:
             hours = start_time / 100
             minutes_ = start_time % 100
             finish = False
@@ -158,7 +182,7 @@ class TimeOfWeek(object):
                 hours += 1
                 minutes_ = 0
                                     
-        return minutes
+        return minutes   
     
     @property
     def has_holiday(self):
