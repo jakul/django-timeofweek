@@ -1,26 +1,11 @@
-class TimeOfWeekException(Exception):
-    pass
-
-class InvalidTimeOfWeekException(TimeOfWeekException):
-    pass
-
-class InvalidDayException(TimeOfWeekException):
-    pass
-
-class InvalidTimeException(TimeOfWeekException):
-    pass
-
-class InvalidPeriodException(TimeOfWeekException):
-    pass
-
-class InvalidTimePeriodException(TimeOfWeekException):
-    pass
+from timeofweek.exceptions import InvalidTimeOfWeekException,\
+    InvalidDayException, InvalidTimeException, InvalidPeriodException,\
+    InvalidTimePeriodException
 
 class TimeOfWeek(object):
     """
     Stores a period of time within a week
     """
-    
     _day_names = ('MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'HOL')
     
     def __init__(self, tow=None):
@@ -35,15 +20,17 @@ class TimeOfWeek(object):
             for day_name in self._day_names:
                 self._periods[day_name] = [0000, 2400]
         else:
+            tow = tow.upper().replace(' ', '')
             periods = tow.split(',')
             for period in periods:
                 day_name, start_time, end_time = self.__parse_period(period)
                 self._periods[day_name] = (start_time, end_time)
                 
-                
     def __contains__(self, key):
         if key is None:
             return False
+        
+        key = key.upper().replace(' ', '')
         
         day, time = self.__parse_time(key)
         if not self._periods.has_key(day):
@@ -112,11 +99,16 @@ class TimeOfWeek(object):
             raise InvalidTimeException(end_time)
         
         if end_time == start_time:
-            raise InvalidPeriodException('Period contains 0 minutes')       
-        
+            raise InvalidPeriodException(period, 'Period contains 0 minutes')       
+
         return day, start_time, end_time
   
     def __add__(self, other):
+        """
+        Adds another TimeOfWeek to this one. If there is a period of the week
+        which appears in either or both TimeOfWeeks then it will be in the
+        return TimeOfWeek 
+        """
         new_object = TimeOfWeek()
         new_object._periods = {}
         for day in other._periods:
@@ -145,7 +137,7 @@ class TimeOfWeek(object):
                 output += '%04d-%04d' % (start_time, end_time)
 
                 outputs.append(output)
-                
+
         return ', '.join(outputs)
     
     @property

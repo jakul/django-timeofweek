@@ -1,12 +1,14 @@
 from django.forms.fields import CharField
-from timeofweek.util import TimeOfWeek, TimeOfWeekException
+from timeofweek.util import TimeOfWeek
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
+from timeofweek.exceptions import TimeOfWeekException
+
 class TimeOfWeekField(CharField):
     def __init__(self, *args, **kwargs):
-        self.default_error_messages['invalid_time_of_week'] = _(
-            u'Invalid time of week'
-        )
+#        self.default_error_messages['invalid_time_of_week'] = _(
+#            u'Invalid time of week'
+#        )
         super(TimeOfWeekField, self).__init__(*args, **kwargs)
 
     def to_python(self, value):
@@ -18,10 +20,10 @@ class TimeOfWeekField(CharField):
         
         try:
             # ensure this is a valid TimeOfWeek string
-            TimeOfWeek(value)
-        except TimeOfWeekException, ex:    
-            raise ValidationError(self.error_messages['invalid_time_of_week'])
-        
-        return value
+            tow = TimeOfWeek(value)
+        except TimeOfWeekException, ex: 
+            raise ValidationError(ex.msg)
+
+        return str(tow)
      
     

@@ -1,5 +1,6 @@
 from django.test import TestCase
-from timeofweek.util import TimeOfWeek, InvalidTimeOfWeekException,\
+from timeofweek.util import TimeOfWeek
+from timeofweek.exceptions import InvalidTimeOfWeekException,\
     InvalidDayException, InvalidTimeException, InvalidPeriodException
 
 
@@ -7,7 +8,9 @@ class TimeOfWeekTest(TestCase):
     
     def setUp(self):
         self.day_names = (
-          'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'HOL'
+          'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'HOL',
+          'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun', 'hol',
+          'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Hol',
         )
         self.times = ('0000', '0920', '1200', '1545', '2359')
 
@@ -56,12 +59,9 @@ class TimeOfWeekTest(TestCase):
         self.assertRaises(InvalidPeriodException, TimeOfWeek, 'MON2359-2359')
         self.assertRaises(InvalidPeriodException, TimeOfWeek, 'MON1200-1200')
         self.assertRaises(InvalidTimeException, TimeOfWeek, 'MON2358-0000')
-        self.assertRaises(InvalidPeriodException, TimeOfWeek, 'MON 1200-1700')
         self.assertRaises(InvalidPeriodException, TimeOfWeek, 'MON1200-1700, ')
-        self.assertRaises(InvalidPeriodException, TimeOfWeek, 'MON1200-1700, TUE1000-1000')
         
-        period = 'MON1200-1700,TUE1200-2359,HOL1000-1200'
-        tow = TimeOfWeek(period)
+        tow = TimeOfWeek('MON1200-1700,TUE1200-2359,HOL1000-1200')
         self.assertTrue('MON1200' in tow)
         self.assertTrue('TUE2358' in tow)
         self.assertTrue('HOL1159' in tow)
@@ -71,14 +71,12 @@ class TimeOfWeekTest(TestCase):
         self.assertFalse('WED1201' in tow)
         self.assertFalse('THU1201' in tow)
         
-        period = 'MON1200-1201'
-        tow = TimeOfWeek(period)
+        tow = TimeOfWeek('MON1200-1201')
         self.assertTrue('MON1200' in tow)
         self.assertFalse('MON1159' in tow)
         self.assertFalse('MON1201' in tow)
-        
-        period = 'MON2358-2400'
-        tow = TimeOfWeek(period)
+
+        tow = TimeOfWeek('MON2358-2400')
         self.assertTrue('MON2358' in tow)
         self.assertTrue('MON2359' in tow)
         def test_func(tow):
@@ -86,6 +84,16 @@ class TimeOfWeekTest(TestCase):
         self.assertRaises(InvalidTimeException, test_func, tow)
         self.assertFalse('TUE0000' in tow)
         
+        # Check spaces in input
+        tow = TimeOfWeek(' M O N 1 2 0 0 -1 20 1,TU E 12 00 -13 00')
+        self.assertTrue('MON1200' in tow)
+        self.assertFalse('MON1159' in tow)
+        self.assertFalse('MON1201' in tow)
+        self.assertTrue('TUE1200' in tow)
+        self.assertFalse('TUE1159' in tow)
+        self.assertFalse('TUE1301' in tow)
+        
+        # Check addition        
         tow = TimeOfWeek('MON1200-1300') + TimeOfWeek('TUE1400-1500')
         self.assertTrue('MON1200' in tow)
         self.assertTrue('TUE1400' in tow)

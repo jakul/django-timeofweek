@@ -2,7 +2,6 @@ import re
 
 from django.db.models import CharField
 from django.utils.translation import ugettext_lazy
-from timeofweek.util import TimeOfWeek, TimeOfWeekException
 from timeofweek import form_fields
 
 class TimeOfWeekField(CharField):
