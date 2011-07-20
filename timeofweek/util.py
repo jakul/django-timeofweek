@@ -25,13 +25,15 @@ class TimeOfWeek(object):
     
     def __init__(self, tow=None):
         """
-        Converts a string representing a time of week into a TimeOfWeek object 
+        Converts a string representing a time of week into a TimeOfWeek object.
+        
+        The time included include the start time and exclude the end time 
         """
         
         self._periods = {}
         if tow is None:
             for day_name in self._day_names:
-                self._periods[day_name] = [0000, 2359]
+                self._periods[day_name] = [0000, 2400]
         else:
             periods = tow.split(',')
             for period in periods:
@@ -44,13 +46,14 @@ class TimeOfWeek(object):
             return False
         
         day, time = self.__parse_time(key)
-        
         if not self._periods.has_key(day):
             #not valid at anytime on this day
             return False
         
+        
         start_time, end_time = self._periods.get(day)
-        if time < start_time or time > end_time:
+
+        if time < start_time or time >= end_time:
             #time is outside allowed bounds
             return False
         
@@ -105,8 +108,11 @@ class TimeOfWeek(object):
         except (ValueError,):
             raise InvalidTimeException(end_time)
         
-        if end_time < 0 or end_time > 2359:
-            raise InvalidTimeException(end_time)        
+        if end_time <= 0 or end_time > 2400:
+            raise InvalidTimeException(end_time)
+        
+        if end_time == start_time:
+            raise InvalidPeriodException('Period contains 0 minutes')       
         
         return day, start_time, end_time
   
@@ -141,6 +147,7 @@ class TimeOfWeek(object):
                 outputs.append(output)
                 
         return ', '.join(outputs)
+
             
     def __str__(self):
         return self.to_json()
