@@ -10,15 +10,6 @@ class TimeOfWeekField(CharField):
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = kwargs.get('max_length', 4000)
         super(TimeOfWeekField, self).__init__(*args, **kwargs)
-
-#    def get_prep_value(self, value):
-#        try:
-#            # ensure this is a valid TimeOfWeek string
-#            TimeOfWeek(value)
-#        except TimeOfWeekException, ex:    
-#            raise ValueError('Invalid time of week string', *ex.args)
-#        
-#        return value
     
     def formfield(self, **kwargs):
         defaults = {

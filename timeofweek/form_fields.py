@@ -5,11 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 from timeofweek.exceptions import TimeOfWeekException
 
 class TimeOfWeekField(CharField):
-    def __init__(self, *args, **kwargs):
-#        self.default_error_messages['invalid_time_of_week'] = _(
-#            u'Invalid time of week'
-#        )
-        super(TimeOfWeekField, self).__init__(*args, **kwargs)
 
     def to_python(self, value):
         """
