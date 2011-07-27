@@ -7,6 +7,9 @@ class TimeOfWeek(object):
     Stores a period of time within a week
     """
     _day_names = ('MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN', 'HOL')
+    MINUTES_PER_WEEK = 10080 # 7 day week
+    MINUTES_PER_HOLIDAY_WEEK = 11520 # 7 day week
+    MINUTES_PER_DAY = 1440
     
     def __init__(self, tow=None):
         """
@@ -69,6 +72,11 @@ class TimeOfWeek(object):
         return day, time
     
     def __parse_period(self, period):
+        if period == '':
+            raise InvalidPeriodException(
+                period, 'There is an extra trailing comma'
+            )
+        
         if len(period) != 12:
             raise InvalidPeriodException(period)
         
@@ -128,6 +136,24 @@ class TimeOfWeek(object):
                     
         return new_object
     
+    def __len__(self):
+        return len(self.to_json())
+    
+    def __cmp__(self, other):                       
+        if self.total_minutes < other.total_minutes:
+            return -1
+        elif self.total_minutes > other.total_minutes:
+            return 1
+        else:
+            #minutes are the same, test if we cover the exact same time
+            new_tow = self + other
+            if new_tow.total_minutes == other.total_minutes:
+                return 0
+            
+            #arbitrarily choose one to be different
+            return -1
+            
+    
     def to_json(self):
         outputs = []
         for day_name in self._day_names:
@@ -156,6 +182,13 @@ class TimeOfWeek(object):
         Return the number of holiday minutes this TimeOfWeek contains
         """
         return self.count_minutes(('HOL',))
+    
+    @property
+    def total_minutes(self):
+        """
+        Return the total number of minutes this TimeOfWeek contains
+        """
+        return self.count_minutes()    
  
     
     def count_minutes(self, days=None):
@@ -189,6 +222,6 @@ class TimeOfWeek(object):
         return 'HOL' in self._periods
             
     def __str__(self):
-        return self.to_json()
+        return '<TimeOfWeek>%s</TimeOfWeek>' % self.to_json()
                 
             

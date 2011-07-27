@@ -3,14 +3,16 @@ from timeofweek.util import TimeOfWeek
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from timeofweek.exceptions import TimeOfWeekException
+from django.forms import widgets
 
 class TimeOfWeekField(CharField):
-
+    
+    def __init__(self, *args, **kwargs):
+        super(TimeOfWeekField, self).__init__(*args, **kwargs)
+        # Do this here, 
+        self.widget = widgets.Textarea()
+        
     def to_python(self, value):
-        """
-        Validates that int() can be called on the input. Returns the result
-        of int(). Returns None for empty values.
-        """
         value = super(CharField, self).to_python(value)
         
         try:

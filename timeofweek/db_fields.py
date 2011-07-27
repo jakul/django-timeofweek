@@ -3,6 +3,7 @@ import re
 from django.db.models import CharField
 from django.utils.translation import ugettext_lazy
 from timeofweek import form_fields
+from timeofweek.util import TimeOfWeek
 
 class TimeOfWeekField(CharField):
     description = ugettext_lazy("Time of Week field")
@@ -18,3 +19,11 @@ class TimeOfWeekField(CharField):
         }
         defaults.update(kwargs)
         return super(TimeOfWeekField, self).formfield(**defaults)
+    
+    def to_python(self, value):
+        if not value:
+            return None
+        return TimeOfWeek(value)
+    
+    def get_db_prep_value(self, value):
+        return str(value)

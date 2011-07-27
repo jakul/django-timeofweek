@@ -161,6 +161,37 @@ class TimeOfWeekTest(TestCase):
         )
         self.assertFalse(tow.has_holiday)        
         
+    def test_cmp(self):
+        tow1 = TimeOfWeek()
+        tow2 = TimeOfWeek('MON1200-1201')
+        tow3 = TimeOfWeek('TUE1200-1201')
+        tow4 = TimeOfWeek('MON1200-1201')
+        self.assertTrue(tow2 < tow1)
+        self.assertFalse(tow2 == tow3)
+        self.assertTrue(tow2 == tow4)
         
-                   
+    def test_total_minutes(self):
+        tow = TimeOfWeek()
+        self.assertEqual(tow.total_minutes, 11520) #don't forget our week has 8 days
+                
+        # Ensure we don't get extra minutes by adding 2 together
+        tow += TimeOfWeek()
+        self.assertEqual(tow.total_minutes, 11520)
+                                
+        tow = TimeOfWeek('MON0000-0001')
+        self.assertEqual(tow.total_minutes, 1)
+        tow = TimeOfWeek('MON0000-0059')
+        self.assertEqual(tow.total_minutes, 59)
+        tow = TimeOfWeek('MON0000-0100')
+        self.assertEqual(tow.total_minutes, 60)
+        tow = TimeOfWeek('MON0000-0101')
+        self.assertEqual(tow.total_minutes, 61)
+        tow = TimeOfWeek('MON0000-2400')
+        self.assertEqual(tow.total_minutes, 1440)
+        tow = TimeOfWeek(
+             'MON0000-1200,TUE0000-1200,WED0000-1200,THU0000-1200,FRI0000-1200,'
+             'SAT0000-1200,SUN0000-1200,HOL0000-1200'
+        )
+        self.assertEqual(tow.total_minutes, 5760)
+  
         
