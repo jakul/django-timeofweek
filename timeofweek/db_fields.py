@@ -23,7 +23,10 @@ class TimeOfWeekField(CharField):
     def to_python(self, value):
         if not value:
             return None
-        return TimeOfWeek(value)
+        
+        tow = TimeOfWeek(value)
+        return tow.to_json()
     
     def get_db_prep_value(self, value):
-        return str(value)
+        tow = TimeOfWeek(value)
+        return tow.to_json()
