@@ -21,6 +21,6 @@ class TimeOfWeekField(CharField):
         except TimeOfWeekException, ex: 
             raise ValidationError(ex.msg)
 
-        return str(tow)
+        return tow.to_json()
      
     
