@@ -275,3 +275,20 @@ class TimeOfWeekTest(TestCase):
         
         tow = TimeOfWeek('TUE1204-1500')
         self.assertEqual(tow.hol, None)
+        
+    def test_get_times(self):
+        tow = TimeOfWeek('MON1200-1400')
+        self.assertEqual(tow.get_times('MON'), [1200,1400])
+        self.assertEqual(tow.get_times('mOn'), [1200,1400])
+        self.assertEqual(tow.get_times('TUE'), None)
+
+        tow = TimeOfWeek()
+        self.assertEqual(tow.get_times('mon'), [0, 2400])
+        self.assertEqual(tow.get_times('tue'), [0, 2400])
+        self.assertEqual(tow.get_times('wed'), [0, 2400])
+        self.assertEqual(tow.get_times('thu'), [0, 2400])
+        self.assertEqual(tow.get_times('fri'), [0, 2400])
+        self.assertEqual(tow.get_times('sat'), [0, 2400])
+        self.assertEqual(tow.get_times('sun'), [0, 2400])
+        self.assertEqual(tow.get_times('hol'), [0, 2400])
+        

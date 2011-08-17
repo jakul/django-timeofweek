@@ -252,6 +252,26 @@ class TimeOfWeek(object):
     @property
     def hol(self):
         return 'HOL' in self._periods and self._periods['HOL'] or None
+    
+    def get_times(self, day):
+        day = day.upper()
+        if day == 'MON':
+            return self.mon
+        if day == 'TUE':
+            return self.tue
+        if day == 'WED':
+            return self.wed
+        if day == 'THU':
+            return self.thu
+        if day == 'FRI':
+            return self.fri
+        if day == 'SAT':
+            return self.sat
+        if day == 'SUN':
+            return self.sun
+        if day == 'HOL':
+            return self.hol
+        
         
             
     def __str__(self):
