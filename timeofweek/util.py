@@ -27,7 +27,7 @@ class TimeOfWeek(object):
             periods = tow.split(',')
             for period in periods:
                 day_name, start_time, end_time = self.__parse_period(period)
-                self._periods[day_name] = (start_time, end_time)
+                self._periods[day_name] = [start_time, end_time]
                 
     def __contains__(self, key):
         if key is None:
@@ -219,7 +219,40 @@ class TimeOfWeek(object):
     
     @property
     def has_holiday(self):
-        return 'HOL' in self._periods
+        return self.hol is not None
+    
+    @property
+    def mon(self):
+        return 'MON' in self._periods and self._periods['MON'] or None
+        
+    @property
+    def tue(self):
+        return 'TUE' in self._periods and self._periods['TUE'] or None
+        
+    @property
+    def wed(self):
+        return 'WED' in self._periods and self._periods['WED'] or None
+        
+    @property
+    def thu(self):
+        return 'THU' in self._periods and self._periods['THU'] or None
+        
+    @property
+    def fri(self):
+        return 'FRI' in self._periods and self._periods['FRI'] or None
+        
+    @property
+    def sat(self):
+        return 'SAT' in self._periods and self._periods['SAT'] or None
+        
+    @property
+    def sun(self):
+        return 'SUN' in self._periods and self._periods['SUN'] or None
+        
+    @property
+    def hol(self):
+        return 'HOL' in self._periods and self._periods['HOL'] or None
+        
             
     def __str__(self):
         return '<TimeOfWeek>%s</TimeOfWeek>' % self.to_json()

@@ -195,3 +195,83 @@ class TimeOfWeekTest(TestCase):
         self.assertEqual(tow.total_minutes, 5760)
   
         
+
+    def test_mon(self):
+        tow = TimeOfWeek()
+        self.assertEqual(tow.mon, [0,2400])
+        
+        tow = TimeOfWeek('MON1204-1500')
+        self.assertEqual(tow.mon, [1204,1500])
+        
+        tow = TimeOfWeek('TUE1204-1500')
+        self.assertEqual(tow.mon, None)        
+
+    def test_tue(self):
+        tow = TimeOfWeek()
+        self.assertEqual(tow.tue, [0,2400])
+        
+        tow = TimeOfWeek('TUE1204-1500')
+        self.assertEqual(tow.tue, [1204,1500])
+        
+        tow = TimeOfWeek('WED1204-1500')
+        self.assertEqual(tow.tue, None)        
+
+    def test_wed(self):
+        tow = TimeOfWeek()
+        self.assertEqual(tow.wed, [0,2400])
+        
+        tow = TimeOfWeek('WED1204-1500')
+        self.assertEqual(tow.wed, [1204,1500])
+        
+        tow = TimeOfWeek('TUE1204-1500')
+        self.assertEqual(tow.wed, None)        
+
+    def test_thu(self):
+        tow = TimeOfWeek()
+        self.assertEqual(tow.thu, [0,2400])
+        
+        tow = TimeOfWeek('THU1204-1500')
+        self.assertEqual(tow.thu, [1204,1500])
+        
+        tow = TimeOfWeek('TUE1204-1500')
+        self.assertEqual(tow.thu, None)        
+
+    def test_fri(self):
+        tow = TimeOfWeek()
+        self.assertEqual(tow.fri, [0,2400])
+        
+        tow = TimeOfWeek('FRI1204-1500')
+        self.assertEqual(tow.fri, [1204,1500])
+        
+        tow = TimeOfWeek('TUE1204-1500')
+        self.assertEqual(tow.fri, None)        
+
+    def test_sat(self):
+        tow = TimeOfWeek()
+        self.assertEqual(tow.sat, [0,2400])
+        
+        tow = TimeOfWeek('SAT1204-1500')
+        self.assertEqual(tow.sat, [1204,1500])
+        
+        tow = TimeOfWeek('TUE1204-1500')
+        self.assertEqual(tow.sat, None)        
+
+    def test_sun(self):
+        tow = TimeOfWeek()
+        self.assertEqual(tow.sun, [0,2400])
+        
+        tow = TimeOfWeek('SUN1204-1500')
+        self.assertEqual(tow.sun, [1204,1500])
+        
+        tow = TimeOfWeek('TUE1204-1500')
+        self.assertEqual(tow.sun, None)        
+
+    def test_hol(self):
+        tow = TimeOfWeek()
+        self.assertEqual(tow.hol, [0,2400])
+        
+        tow = TimeOfWeek('HOL1204-1500')
+        self.assertEqual(tow.hol, [1204,1500])
+        
+        tow = TimeOfWeek('TUE1204-1500')
+        self.assertEqual(tow.hol, None)
