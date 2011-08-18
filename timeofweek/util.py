@@ -287,10 +287,13 @@ def number_to_time(time):
     Input: 0    Output '00:00'
     """
     hours = time / 100
-    if hours > 23:
+    if hours > 24:
         raise InvalidTimeException(time)
     minutes = time - (hours * 100)
     if minutes > 59:
+        raise InvalidTimeException(time)
+    
+    if hours == 24 and minutes > 0:
         raise InvalidTimeException(time)
     
     return '%0.2d:%0.2d' % (hours, minutes)            

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from timeofweek.util import TimeOfWeek
+from timeofweek.util import TimeOfWeek, number_to_time
 from timeofweek.exceptions import InvalidTimeOfWeekException,\
     InvalidDayException, InvalidTimeException, InvalidPeriodException
 
@@ -304,9 +304,10 @@ class NumberToTimeTest(TestCase):
         self.assertEqual(number_to_time(134), '01:34')
         self.assertEqual(number_to_time(1245), '12:45')
         self.assertEqual(number_to_time(2359), '23:59')
+        self.assertEqual(number_to_time(2400), '24:00')
         
         self.assertRaises(
-           InvalidTimeException, lambda t: number_to_time(t), 2400
+           InvalidTimeException, lambda t: number_to_time(t), 2401
         )
         self.assertRaises(
            InvalidTimeException, lambda t: number_to_time(t), -1
