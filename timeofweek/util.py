@@ -30,24 +30,68 @@ class TimeOfWeek(object):
                 self._periods[day_name] = [start_time, end_time]
                 
     def __contains__(self, key):
+        """
+        This should accept keys of the format 'MON1200' and 'MON1200-1400' and
+        'MON1200-1300,TUE1200-2300'
+        """
+        
         if key is None:
             return False
         
-        key = key.upper().replace(' ', '')
+        tow = None
+        if issubclass(key.__class__, TimeOfWeek):
+            tow = key
+        else:
+            key = key.upper().replace(' ', '')
+            if '-' in key:
+                # This is a time period
+                tow = TimeOfWeek(key)
         
-        day, time = self.__parse_time(key)
-        if not self._periods.has_key(day):
-            #not valid at anytime on this day
-            return False
-        
-        
-        start_time, end_time = self._periods.get(day)
+        if tow is None:
+            # this is a day and exact time
+            
+            day, time = self.__parse_time(key)
+            if not self._periods.has_key(day):
+                #not valid at anytime on this day
+                return False
+            
+            
+            start_time, end_time = self._periods.get(day)
+    
+            if time < start_time or time >= end_time:
+                #time is outside allowed bounds
+                return False
+            
+            return True
 
-        if time < start_time or time >= end_time:
-            #time is outside allowed bounds
+        # We have a time period
+        # Compare the start and end times of each day to see if this TOW
+        # contains the passed in one
+        if tow.total_minutes > self.total_minutes:
+            # Other TOW contains more minutes than this one, therefore it can't
+            # be completely contained in this one
             return False
         
+        if len(tow._periods.keys()) > len(self._periods.keys()):
+            # Other TOW contains more days than this one, therefore it can't
+            # be completely contained in this one
+            return False
+        
+        for day, (start, finish) in tow._periods.items():
+            if day not in self._periods.keys():
+                # Other TOW has a day this one doesn't have
+                return False
+            
+            if start < self._periods[day][0]:
+                # Other TOW starts before this one
+                return False
+            
+            if finish > self._periods[day][1]:
+                # Other TOW ends after this one
+                return False
+            
         return True
+         
     
     def __parse_time(self, tow):
         if len(tow) != 7:

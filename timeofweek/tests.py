@@ -1,7 +1,8 @@
 from django.test import TestCase
 from timeofweek.util import TimeOfWeek, number_to_time
 from timeofweek.exceptions import InvalidTimeOfWeekException,\
-    InvalidDayException, InvalidTimeException, InvalidPeriodException
+    InvalidDayException, InvalidTimeException, InvalidPeriodException,\
+    TimeOfWeekException
 
 
 class TimeOfWeekTest(TestCase):
@@ -38,7 +39,7 @@ class TimeOfWeekTest(TestCase):
                 )
             for time in self.invalid_times:
                 self.assertRaises(
-                    InvalidTimeOfWeekException, tow.__contains__, day + time
+                    TimeOfWeekException, tow.__contains__, day + time
                 )          
             for time in self.invalid_times2:
                 self.assertRaises(
@@ -291,6 +292,32 @@ class TimeOfWeekTest(TestCase):
         self.assertEqual(tow.get_times('sat'), [0, 2400])
         self.assertEqual(tow.get_times('sun'), [0, 2400])
         self.assertEqual(tow.get_times('hol'), [0, 2400])
+        
+    def test_contains(self):
+        tow = TimeOfWeek()
+        self.assertTrue('MON1200' in tow)
+        self.assertTrue('WED2359' in tow)
+        self.assertTrue('HOL1200' in tow)
+        self.assertTrue('MON1200-2400' in tow)
+        self.assertTrue('MON1200-2400,TUE1200-2400' in tow)
+        self.assertTrue(TimeOfWeek('MON1200-2400') in tow)
+        self.assertTrue(TimeOfWeek('MON1200-2400,TUE1200-2400') in tow)
+                
+        tow = TimeOfWeek('MON0000-2400,TUE1200-2400')
+        self.assertTrue('MON1200' in tow)
+        self.assertTrue('HOL1200' not in tow)
+        self.assertTrue('MON1200-2400' in tow)
+        self.assertTrue('TUE1200-2400' in tow)
+        self.assertTrue('MON1200-2400, TUE1200-2400' in tow)
+        self.assertTrue('HOL1200-2400' not in tow)
+        self.assertTrue('MON1200-2400, HOL1200-2400' not in tow)
+        self.assertTrue(TimeOfWeek('MON1200-2400') in tow)
+        self.assertTrue(TimeOfWeek('TUE1200-2400') in tow)
+        self.assertTrue(TimeOfWeek('MON1200-2400, TUE1200-2400') in tow)
+        self.assertTrue(TimeOfWeek('HOL1200-2400') not in tow)
+        self.assertTrue(TimeOfWeek('MON1200-2400, HOL1200-2400') not in tow)
+        
+        
         
         
         
