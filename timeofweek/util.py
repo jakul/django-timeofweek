@@ -271,10 +271,26 @@ class TimeOfWeek(object):
             return self.sun
         if day == 'HOL':
             return self.hol
-        
-        
             
     def __str__(self):
         return '<TimeOfWeek>%s</TimeOfWeek>' % self.to_json()
                 
             
+            
+
+def number_to_time(time):
+    """
+    Converts a time stored as a number into a string. Raises
+    InvalidTimeException if the number passed in cannot be converted
+    
+    Input: 2359 Output '23:59'
+    Input: 0    Output '00:00'
+    """
+    hours = time / 100
+    if hours > 23:
+        raise InvalidTimeException(time)
+    minutes = time - (hours * 100)
+    if minutes > 59:
+        raise InvalidTimeException(time)
+    
+    return '%0.2d:%0.2d' % (hours, minutes)            

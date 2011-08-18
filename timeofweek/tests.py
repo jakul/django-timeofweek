@@ -292,3 +292,32 @@ class TimeOfWeekTest(TestCase):
         self.assertEqual(tow.get_times('sun'), [0, 2400])
         self.assertEqual(tow.get_times('hol'), [0, 2400])
         
+        
+        
+        
+class NumberToTimeTest(TestCase):
+        
+    def test_number_to_time(self):
+        self.assertEqual(number_to_time(0), '00:00')
+        self.assertEqual(number_to_time(10), '00:10')
+        self.assertEqual(number_to_time(59), '00:59')
+        self.assertEqual(number_to_time(134), '01:34')
+        self.assertEqual(number_to_time(1245), '12:45')
+        self.assertEqual(number_to_time(2359), '23:59')
+        
+        self.assertRaises(
+           InvalidTimeException, lambda t: number_to_time(t), 2400
+        )
+        self.assertRaises(
+           InvalidTimeException, lambda t: number_to_time(t), -1
+        )
+        self.assertRaises(
+           InvalidTimeException, lambda t: number_to_time(t), 1299
+        )
+        self.assertRaises(
+           InvalidTimeException, lambda t: number_to_time(t), 1234000000000
+        )
+        self.assertRaises(
+           InvalidTimeException, lambda t: number_to_time(t), 1000000001234
+        )
+                
