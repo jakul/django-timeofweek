@@ -27,6 +27,9 @@ class TimeOfWeekField(CharField):
         tow = TimeOfWeek(value)
         return tow.to_json()
     
-    def get_db_prep_value(self, value):
+    def get_db_prep_value(self, value, connection=None, prepared=False):
+        if prepared:
+            return value
+        
         tow = TimeOfWeek(value)
         return tow.to_json()
